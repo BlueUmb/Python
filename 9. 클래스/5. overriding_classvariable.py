@@ -7,6 +7,8 @@
             부모클래스에 클래스변수 추가하기
 '''
 
+import random as ran
+
 class Monster:
     max_num = 1000
 
@@ -23,10 +25,34 @@ class Monster:
         print(self.max_num)
 
 
-goblin = Monster("goblin",200,10)
-goblin.print_count()
-goblin.move()
+class Wolf(Monster):
+    pass
 
-shark = Monster("shark",200,10)
-shark.print_count()
+class Shark(Monster):
+    def move(self):
+        print(f"[{self.name}] 헤엄치기")
+
+class Dragon(Monster):
+    #생성자 오버라이딩
+    def __init__(self,name,health,attack):
+        super().__init__(name,health,attack)
+        self.skills = ("불뿜기","꼬리치기", "날개치기")
+
+    def move(self):
+        print(f"[{self.name}] 날아가기")
+
+    def skill(self):
+        print(f"{self.name} 스킬사용 {self.skills[ran.randint(0,2)]}")
+
+wolf = Wolf("울프",1500,200)
+wolf.move()
+print(wolf.max_num)
+
+shark = Shark("샤크", 3000, 400)
 shark.move()
+print(shark.max_num)
+
+dragon = Dragon("드래곤", 8000, 800)
+dragon.move()
+dragon.skill()
+print(dragon.max_num)
