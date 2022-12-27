@@ -35,5 +35,36 @@ import numpy as np
 # 사이킷런을 코드에 가져오기 위해서 sklearn라는 이름으로 가져와야 함
 # 선형 회귀를 구현하기 위해서 linear_model을 import
 from sklearn import linear_model
+import matplotlib.pyplot as plt
 
 regr = linear_model.LinearRegression()
+
+# 입력 데이터 집합 X
+X = [[163], [179], [166], [169], [171]]  # 입력데이터 (2차원 리스트)
+y = [54, 63, 57, 56, 58]  # 정답
+
+regr.fit(X, y)  # 데이터 사용하여 훈련(학습)하기
+
+# 직선의 기울기
+coef = regr.coef_  # regr 모델의 coef_ 속성값으로 얻음
+
+# 직선의 절편
+intercept = regr.intercept_  # regr 모델의 intercept_ 속성값으로 얻음
+
+score = regr.score(X, y)
+
+print("y={}* x +{:2f}".format(coef.round(2), intercept))
+print("데이터와 선형 회귀 직선의 관계 점수 : {:1%}".format(score))
+
+fig = plt.figure(figsize=(8, 8))
+
+plt.scatter(X, y, color='blue', marker='D')
+y_pred = regr.predict(X)
+plt.plot(X, y_pred, 'r:')
+fig.savefig("LinearRegression_result.png")
+
+sunsin = [[167]]
+result = regr.predict(sunsin)
+print("순신이의 키가 {}cm 이므로 몸무게는 {}kg으로 추정됨 ".format(sunsin[0], result.round(1)))
+
+plt.show()
