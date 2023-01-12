@@ -1,106 +1,198 @@
-'''
-    1. 인공 신경망
-        1) artificial neural network
-            - 사람 뇌의 기본 단위는 뉴런
-            - 인공 신경망은 뉴런 구조에서 영감을 얻어 고안한 것
-            - 딥러닝 구조의 핵심
-
-        2) perceptron
-            - 뉴런의 원리를 본따 만든 인공 구조
-                - 입력값과 가중치를 곱함
-                - 곱한 값들의 총합을 구함
-                - 총합이 0을 넘으면 1, 넘지 않으면 0을 출력
-            - 입력값, 가중치, 활성화 함수로 이루어진 간단한 구조
-                - 원하는 출력값을 내보내도록 가중치 조정해가는 작업 ==> 학습, 훈련 (training)
-                - 모델을 훈련시켜 최적인 가중치를 구함
-            - 단순 퍼셉트론은 선형 분류 문제만 해결한다는 한계가 있음
-                - 입력값과 가중치의 선형 결합으로 이루어진 구조
-                - 퍼셉트론 하나로는 비선형 분류 문제 해결 안됨
-                    => 다중 퍼셉트론(multi-layer perceptron)을 만들면 해결됨
-
-        3) 신경망
-            - 입력층, 은닉층(중간층), 출력층 구성
-
-        4) 활성화 함수 (activation function)
-            - 입력값을 어떤 값으로 변환해 출력할지 결정하는 함수
-            - 입력값과 가중치를 곱한 값들은 활성화 함수를 거쳐 출력값이 됨
-            - 시그모이드 함수와 ReLU 함수
-                - sigmoid function
-                    - 입력값이 커질수록 출력값은 1에 가까워짐
-                    - 입력값이 작아질수록 출력값은 0에 가까워짐
-                - Rectified Linear Unit function
-                    - 입력값이 0보다 크면 입력값을 그대로 유지
-                        - max(0, x)
-                    - 입력값이 0이하면 0을 출력
-
-        5) 경사 하강법
-            - 신경망 훈련의 목표는 최적 파라미터를 찾는 것임
-                - 파라미터는 가중치와 편향
-            - 최적 파라미터 손실 함수가 최소값일 떄의 파라미터를 뜻함.
-                - 매 훈련 단계마다 손실값이 줄어드는 방향으로 파라미터를 갱신하며 최적 파라미터를 찾음
-
-            - 손실 함수 (loss function)
-                - 모델 성능이 얼마나 좋은지 나쁜지 측정하는 함수
-                - 예측한 값과 실제값의 차이(손실)를 구하는 함수
-                    - 당연히 차이는 작을수록 좋음
-                    - 손실 함수의 값이 작을수록 좋은 모델이라고 볼 수 있음
-                - 평균 제곱 오차(MSE), 교차엔트로피(crossentropy)
-                - 손실함수 값이 최소가 되는 가중치와 편향을 구하는 작업(신경망 훈련)
-
-            - 경사 하강법 (gradient descent)
-                - 경사를 따라 내려가는 방법
-                - 절차 (①②③)
-                    -① 현재 위치에서 기울기(경사)를 구함
-                    -② 기울기 아래 방향으로 일정 거리를 이동함
-                    - 현재 위치의 기울기가 0이 될때까지 ① ~ ②단계를 반복함
-                        - 손실 함수가 최소가 될때까지임
-                    - 학습률(learning rage)
-                        - 기울기 방향으로 얼마만큼 이동할지 결정하는 값
-                        - 가중치를 한 번에 얼마나 갱신할지 결정
-                        - 다음 가중치
-                            - 기존 가중치에서 '학습률과 기울기를 곱한 값'을 뺀 값
-                        - 학습률에 따라 훈련 속도가 달라짐
-                            - 한 걸음에 얼마만큼 이동할지 결정하는게 학습률임
-                                - 학습률이 너무 크면 훈련 속도는 빠르지만, 더 빠른 길로 이어지는 지점을 건너뛰어서
-                                  최적 가중치를 찾지 못할 수도 있음.
-                                - 학습률이 너무 작으면 훈련 속도가 느려짐
-                            - 하이퍼파라미터이기에 우리가 직접 설정해 줘야 함
-                                - 보통 0.1 ~ 0.0001 범위의 값을 사용함
-                    - mini batch
-                        - 데이터를 미니배치 단위로 무작위로 추출해 경사 하강법을 수행
-                            - 여러 데이터의 묶음
-                            - 데이터를 하나씩 훈련하기보다는 여러 개를 한 묶음으로 처리함(효율적임)
-                        - 미니 배치 경사 하강법 (mini batch gradient descent)
-
-        6) 순전파 & 역전파
-            - forward propagation 순전파
-                - 신경망에서 입력값이 입력층과 은닉층을 거쳐 출력층에 도달하기까지의 계산 과정
-                - 각 층을 통과할때마다 입력값에 가중치를 곱해 다음 층으로 출력할 값을 계산
-                - 입력값과 가중치를 활용해 출력값을 구하는 과정
-            - back propagation 역전파
-                - 순전파의 반대 개념
-                - 신경망 훈련에서 가장 중요한 내용임
-                - 손실값을 통해 기울기를 구해 가중치를 갱신하는 과정
-
-            - 절차
-                - 순전파로 구한 타깃 예측값과 실제 타깃값의 차이(손실)를 구함
-                - 손실값을 줄이는 방향으로 가중치의 기울기를 구함
-                - 기울기를 바탕으로 가중치를 갱신함. 이떄 출력층 => 입력층 방향으로 가중치를 갱신(역전파)
-                - 갱신된 가중치를 바탕으로 반복함. 손실값이 줄어듦
-
-            - 순전파와 역전파를 반복하며 최적 가중치를 찾아 신경망 학습이 이뤄짐
-
-    2. 딥러닝 알고리즘 성능 향상
-        1) 드롭아웃(dropout)
-            - 과대적합을 방지하기 위하여 신경망 훈련 과정에서 무작위로 일부 뉴런을 제외하는 기법
-            - 얼마나 많은 뉴런을 드롭아웃할지는 하이퍼파라미터로 설정할수 있음
-                - 드롭아웃 비율을 0.2로 설정하면 전체 뉴런의 20%를 제외함
-            - 훈련 단계에서만 적용함, 검증이나 예측 단계에서는 적용하지 않음
-
-        2) 옵티마이저(optimizer)
-            - 신경망의 최적 가중치를 찾아주는 알고리즘
-            - 확률적 경사 하강법
-            - 모멘텀, Adam, RMSProp, Adagrad
-                - Adam  : 딥러닝 모델을 설계할 때 가장 많이 사용하는 옵티마이저.
+import torch
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets
+import torchvision.transforms as tr
+from torchvision.transforms import ToTensor, Lambda, Compose
+import matplotlib.pyplot as plt
+import numpy as np
 
 '''
+    * 파이토치에서 제공하는 데이터 셋
+        - 토치비전(torchvision) : 파이토치에서 제공하는 데이터 셋들이 모여있는 패키지
+        - data와 label
+        - ex) Fashion-MNIST data
+    
+    * Dataloader
+        - Dataset을 model에 공급할 수 있도록 iterable 객체로 감싸줌
+    
+'''
+# 공개데이터셋에서 학습데이터를 내려받기
+training_data = datasets.FashionMNIST(
+    root='data',
+    train=True,
+    download=True,
+    transform=ToTensor()
+)
+
+test_data = datasets.FashionMNIST(
+    root='data',
+    train=False,
+    download=True,
+    transform=ToTensor()
+)
+
+print(training_data)
+print(type(training_data))
+
+print("-" * 50)
+print(training_data[0])
+
+# 데이터 시각화하기
+label_map = {
+    0: "T-Shirt",
+    1: "Trouser",
+    2: "PullOver",
+    3: "Dress",
+    4: "Coat",
+    5: "Sandal",
+    6: "Shirt",
+    7: "Sneaker",
+    8: "Bag",
+    9: "Ankle Boot"
+}
+
+figure = plt.figure(figsize=(8, 8))
+cols, rows = 3, 3
+
+for i in range(1, cols * rows + 1):
+    sample_idx = torch.randint(len(training_data), size=(1,)).item()
+    img, label = training_data[sample_idx]
+    figure.add_subplot(rows, cols, i)
+    plt.title(label_map[label])
+    plt.axis("off")
+    plt.imshow(img.squeeze(), cmap="gray")
+
+plt.show()
+
+'''
+    * DataLoader 만들기
+        - 데이터 준비
+        - 학습에 사용될 데이터 전체를 보관했다가 모델 학습을 할 때 배치(batch) 크기만큼 데이터를 꺼내서 사용
+        - 내부적으로 반복자(iterator)에 포함된 인덱스(index)를 이용해서 배치크기만큼 데이터를 반환함
+        
+'''
+train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False)
+
+# DataLoader 를 통해 반복하기(iterate)
+# 이미지와 정답(label)을 표시하기
+train_features, train_labels = next(iter(train_dataloader))
+print(f"Feature batch shape : {train_features.size()}")
+print(f"Label batch shape : {train_labels.size()}")
+img = train_features[0].squeeze()
+label = train_labels[0]
+plt.imshow(img, cmap="gray")
+plt.show()
+print(f"Label : {label}")
+
+'''
+    * Custom Dataset, Data Loader 만들기
+        - 딥러닝은 기본적으로 대량의 데이터 이용하여 모델을 학습
+        - 데이터를 한번에 메모리에 불러와서 훈련시키면 시간과 비용 측면에서 비효율적임
+        - 데이터를 한번에 다 부르지 않고 조금씩 나누어 불러서 사용하는 방식
+        
+        - 1) CustomDataSet 클래스 구현
+
+'''
+
+
+# 3개 함수 지정 (정해진 틀)
+class CustomDataSet(Dataset):
+    # 필요한 변수 선언하고, 데이터 셋의 전처리를 해주는 함수
+    def __init__(self, np_data, transform=None):
+        self.data = np_data
+        self.transform = transform
+        self.len = np_data.shape[0]
+
+    # 데이터셋의 길이, 즉 샘플의 수를 가져오는 함수
+    def __len__(self):
+        return self.len
+
+    # 데이터셋에서 특정 데이터를 가져오는 함수(index번째 데이터를 반환하는 함수)
+    def __getitem__(self, idx):
+        sample = self.data[idx]
+        if self.transform:
+            sample = self.transform(sample)
+            return sample
+
+
+'''
+    tr.Compose() : 여러개의 이미지 전처리 기능을 연결해서 사용할수 있게 해주는 함수임
+                    여기서는 하나의 전처리 기능(square) 함수만 연결되어 있음
+'''
+
+
+def square(sample):
+    return sample ** 2
+
+
+trans = tr.Compose([square])
+
+# 커스텀 데이터 셋 생성
+np_data = np.arange(10)
+
+# CustomDataSet 클래스의 인스턴스 생성
+# 이미지 전처리 기능인 square 함수를 적용할수 있는 데이터셋
+custom_dataset = CustomDataSet(np_data, transform=trans)
+
+# custom_dataset 으로부터 새로운 데이터로더 생성
+# batch_size는 각각의 샘플 개수, shuffle은 샘플을 섞어서 읽어옴
+custom_dataloader = DataLoader(custom_dataset, batch_size=2, shuffle=True)
+
+for _ in range(3):
+    for data in custom_dataloader:
+        print(data)
+    print("=" * 20)
+
+# device 설정
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print('Uscing {} device'.format(device))
+
+'''
+    * Model Class 만들기
+        0) 단순 신경망 정의
+        1) nn.Module을 상속하여 정의
+            - nn.Module을 상속받는 모델은 기본적으로 __init()__ 과 forward() 함수를 포함
+            - __init()__
+                - 활성화 함수
+            - forward()
+                - 모델에서 실행되어야 하는 연산을 정의
+                
+'''
+
+
+class NeuralNetwork(nn.Module):
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()  # nn.Module의 생성자를 호출
+        self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(28 * 28, 128),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(128, 10)
+        )
+
+    def forward(self, x):
+        x = self.flatten(x)  # 입력 x를 전달받아 전체 신경망을 순전파하는 함수
+        ezen = self.linear_relu_stack(x)  # 입력 x를 펼치는 flatten 계층을 적용한후, linear_relu_stack 객체 적용
+        return ezen
+
+
+# Model instance 생성, device 설정
+model = NeuralNetwork().to(device)
+print(model)
+
+# 가상의 data로 예측하기
+# 입력 데이터 X 생성 - 28 * 28 크기의 이미지가 1개 들어있는 텐서임.
+X = torch.rand(1, 28, 28, device=device)
+
+# 신경망 객체 model을 적용해 순전파 수행하기
+# 입력 X를 신경망의 각 계층으로 전달해 결과를 출력
+ezen = model(X)
+
+predict_result = nn.Softmax(dim=1)(ezen)
+y_pred = predict_result.argmax(1)           # 가장 큰 값을 갖는 예측된 클래스
+
+print(f"예측된 클래스 : {y_pred}")
+
